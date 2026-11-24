@@ -1,0 +1,909 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AMAN STUDY ZONE</title>
+<style>
+:root {
+  --bg:#080d19;
+  --panel:#111b2e;
+  --blue:#3985ff;
+  --cyan:#35d5e8;
+  --text:#f3f6ff;
+  --muted:#9baac4;
+  --border:#263754;
+}
+* {
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+body {
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,sans-serif;
+  min-height:100vh;
+}
+button,input,textarea {
+  font:inherit;
+}
+button {cursor:pointer}
+.layout {display:flex;min-height:100vh}
+.sidebar {
+  width:245px;
+  background:#0d1627;
+  border-right:1px solid var(--border);
+  padding:22px 14px;
+  position:fixed;
+  top:0;bottom:0;left:0;
+  overflow-y:auto;
+  z-index:10;
+}
+.brand {
+  font-size:21px;
+  font-weight:900;
+  color:var(--cyan);
+  padding:10px 8px 25px;
+}
+.brand small {
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  letter-spacing:3px;
+  margin-top:6px;
+}
+.nav-title {
+  color:#6f83a5;
+  font-size:10px;
+  font-weight:bold;
+  letter-spacing:2px;
+  padding:15px 10px 8px;
+}
+.nav {
+  display:block;
+  width:100%;
+  text-align:left;
+  padding:12px;
+  border:0;
+  border-radius:9px;
+  color:#b7c5dc;
+  background:transparent;
+  margin:4px 0;
+  font-size:14px;
+}
+.nav:hover,.nav.active {
+  background:#1b3153;
+  color:white;
+}
+.main {
+  margin-left:245px;
+  width:calc(100% - 245px);
+  padding:28px;
+  max-width:1500px;
+}
+.topbar {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:25px;
+}
+.menu-btn {display:none}
+.page {display:none}
+.page.active {display:block}
+h1 {font-size:30px;margin-bottom:9px}
+h2 {font-size:21px;margin-bottom:15px}
+h3 {font-size:16px;margin-bottom:10px}
+.subtitle {
+  color:var(--muted);
+  margin-bottom:24px;
+  line-height:1.6;
+}
+.hero {
+  padding:30px;
+  border-radius:18px;
+  background:linear-gradient(120deg,#12346b,#13223e 65%,#173e55);
+  border:1px solid #31598b;
+  margin-bottom:24px;
+}
+.hero h1 {font-size:34px}
+.hero p {
+  color:#c3d8f8;
+  line-height:1.6;
+  margin:12px 0 20px;
+}
+.grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:15px;
+  margin-bottom:25px;
+}
+.card {
+  background:var(--panel);
+  border:1px solid var(--border);
+  padding:19px;
+  border-radius:14px;
+}
+.card p {
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.6;
+}
+.card .big {font-size:27px;margin-bottom:12px}
+.card h3 {margin-bottom:8px}
+.card button {margin-top:14px}
+.btn {
+  background:var(--blue);
+  color:white;
+  border:0;
+  padding:11px 16px;
+  border-radius:9px;
+  font-weight:bold;
+}
+.btn:hover {filter:brightness(1.15)}
+.btn.secondary {background:#253956}
+.btn.danger {background:#a93d4c}
+.btn.small {padding:8px 11px;font-size:12px}
+input,textarea {
+  width:100%;
+  padding:12px;
+  background:#091323;
+  color:white;
+  border:1px solid var(--border);
+  border-radius:9px;
+  outline:none;
+  margin:7px 0 13px;
+}
+textarea {min-height:110px;resize:vertical}
+label {color:#c7d5eb;font-size:13px}
+.row {
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+.row>* {flex:1}
+.tag {
+  display:inline-block;
+  background:#1b3153;
+  color:#8ec8ff;
+  padding:6px 10px;
+  border-radius:20px;
+  font-size:11px;
+  margin:3px;
+}
+.resource {
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:center;
+  padding:14px 0;
+  border-bottom:1px solid var(--border);
+}
+.resource a {color:var(--cyan);text-decoration:none}
+.preview {
+  width:100%;
+  height:280px;
+  background:white;
+  border:0;
+  border-radius:9px;
+  margin-top:12px;
+}
+.answer {
+  display:block;
+  width:100%;
+  text-align:left;
+  padding:12px;
+  background:#17243b;
+  border:1px solid var(--border);
+  color:white;
+  border-radius:8px;
+  margin:8px 0;
+}
+#toast {
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  background:#1e3d60;
+  padding:13px 18px;
+  border-radius:10px;
+  display:none;
+  z-index:30;
+}
+footer {
+  color:#7284a0;
+  text-align:center;
+  padding:30px;
+  font-size:12px;
+}
+@media(max-width:800px) {
+  .sidebar {transform:translateX(-100%);transition:.25s}
+  .sidebar.open {transform:translateX(0)}
+  .main {margin-left:0;width:100%;padding:17px}
+  .menu-btn {display:block}
+  h1 {font-size:25px}
+  .hero h1 {font-size:27px}
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<aside class="sidebar" id="sidebar">
+  <div class="brand">
+    AMAN STUDY ZONE
+    <small>LEARN • PRACTICE • GROW</small>
+  </div>
+  <div class="nav-title">MAIN MENU</div>
+  <button class="nav active" onclick="showPage('home',this)">🏠 Dashboard</button>
+  <button class="nav" onclick="showPage('classes',this)">📚 Classes 1–12</button>
+  <button class="nav" onclick="showPage('exams',this)">🎯 Competitive Exams</button>
+  <button class="nav" onclick="showPage('coding',this)">💻 Coding Academy</button>
+  <div class="nav-title">STUDY TOOLS</div>
+  <button class="nav" onclick="showPage('notes',this)">📝 My Notes</button>
+  <button class="nav" onclick="showPage('quiz',this)">🧠 Quiz</button>
+  <button class="nav" onclick="showPage('flashcards',this)">🗂 Flashcards</button>
+  <button class="nav" onclick="showPage('timer',this)">⏱ Study Timer</button>
+  <button class="nav" onclick="showPage('calculator',this)">🔢 Calculator</button>
+  <div class="nav-title">RESOURCES</div>
+  <button class="nav" onclick="showPage('websites',this)">🌐 Study Websites</button>
+  <button class="nav" onclick="showPage('about',this)">ℹ About</button>
+</aside>
+
+<main class="main">
+<div class="topbar">
+  <button class="btn secondary menu-btn" onclick="toggleMenu()">☰ Menu</button>
+  <b>Welcome to your learning space</b>
+  <span class="tag">DARK PREMIUM</span>
+</div>
+
+<section class="page active" id="home">
+  <div class="hero">
+    <span class="tag">YOUR LEARNING JOURNEY</span>
+    <h1>Welcome to AMAN STUDY ZONE</h1>
+    <p>Learn new skills, improve your knowledge and practice every day.</p>
+    <button class="btn" onclick="showPage('classes')">Explore Classes →</button>
+    <button class="btn secondary" onclick="showPage('coding')">Start Coding</button>
+  </div>
+  <div class="grid">
+    <div class="card"><div class="big">📚</div><h3>12 Classes</h3><p>Learning resources for Class 1 to 12.</p></div>
+    <div class="card"><div class="big">💻</div><h3>Coding Academy</h3><p>Learn programming step by step.</p></div>
+    <div class="card"><div class="big">🧠</div><h3>Quiz Practice</h3><p>Test your knowledge.</p></div>
+    <div class="card"><div class="big">📝</div><h3>Personal Notes</h3><p>Write and save your study notes.</p></div>
+  </div>
+  <h2>Quick Access</h2>
+  <div class="grid">
+    <div class="card"><h3>📖 Study</h3><p>Choose your class and explore resources.</p><button class="btn" onclick="showPage('classes')">Open</button></div>
+    <div class="card"><h3>👨‍💻 Coding</h3><p>Try HTML, CSS and JavaScript.</p><button class="btn" onclick="showPage('coding')">Open</button></div>
+    <div class="card"><h3>⏱ Focus</h3><p>Use a timer for study sessions.</p><button class="btn" onclick="showPage('timer')">Open</button></div>
+  </div>
+  <div class="card">
+    <h3>Your Study Motivation</h3>
+    <p id="quote">Small steps every day lead to big achievements.</p>
+    <button class="btn secondary" onclick="newQuote()">New Motivation</button>
+  </div>
+</section>
+
+<section class="page" id="classes">
+  <h1>Classes 1–12</h1>
+  <p class="subtitle">Select your class to explore learning resources.</p>
+  <div class="grid" id="classGrid"></div>
+  <div class="card">
+    <h2 id="classTitle">Select a class</h2>
+    <p id="classInfo">Your selected class resources will appear here.</p>
+    <div id="classLinks"></div>
+  </div>
+</section>
+
+<section class="page" id="exams">
+  <h1>Competitive Exams</h1>
+  <p class="subtitle">Explore official exam information and resources.</p>
+  <div class="grid" id="examGrid"></div>
+</section>
+
+<section class="page" id="coding">
+  <h1>💻 Coding Academy</h1>
+  <p class="subtitle">Learn programming from beginner to advanced level.</p>
+  <div class="grid" id="courseGrid"></div>
+  <div class="card">
+    <h2 id="lessonTitle">Select a programming language</h2>
+    <p id="lessonDescription">Choose a course above to start learning.</p>
+    <div id="lessonContent"></div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h2>Code Playground</h2>
+    <p class="subtitle">HTML, CSS and JavaScript run in this browser playground.</p>
+    <label for="editor">Your HTML code</label>
+    <textarea id="editor" spellcheck="false"><!DOCTYPE html>
+<html>
+<head>
+<style>
+body{background:#101b35;color:white;font-family:Arial;text-align:center;padding:30px}
+h1{color:#42d9ee}
+</style>
+</head>
+<body>
+<h1>Hello, Student!</h1>
+<p>Welcome to AMAN STUDY ZONE.</p>
+</body>
+</html></textarea>
+    <div class="row">
+      <button class="btn" onclick="runCode()">▶ Run Code</button>
+      <button class="btn secondary" onclick="resetCode()">↺ Reset</button>
+      <button class="btn secondary" onclick="copyCode()">Copy Code</button>
+    </div>
+    <h3 style="margin-top:18px">Live Output</h3>
+    <iframe class="preview" id="preview" title="Code preview" sandbox="allow-scripts"></iframe>
+  </div>
+</section>
+
+<section class="page" id="notes">
+  <h1>📝 My Notes</h1>
+  <p class="subtitle">Notes are saved in this browser on this device.</p>
+  <div class="card">
+    <label>Note title</label>
+    <input id="noteTitle" placeholder="Enter note title">
+    <label>Write your note</label>
+    <textarea id="noteText" placeholder="Start writing..."></textarea>
+    <button class="btn" onclick="saveNote()">Save Note</button>
+  </div>
+  <h2 style="margin-top:25px">Saved Notes</h2>
+  <div id="notesList"></div>
+</section>
+
+<section class="page" id="quiz">
+  <h1>🧠 Knowledge Quiz</h1>
+  <div class="card">
+    <div class="tag" id="questionNumber">Question 1</div>
+    <h2 id="question">Loading...</h2>
+    <div id="answers"></div>
+    <p id="quizFeedback"></p>
+    <button class="btn" id="nextQuestion" onclick="nextQuestion()" style="display:none">Next Question →</button>
+    <button class="btn secondary" onclick="startQuiz()">Restart Quiz</button>
+    <h3 id="score" style="margin-top:18px"></h3>
+  </div>
+</section>
+
+<section class="page" id="flashcards">
+  <h1>🗂 Flashcards</h1>
+  <div class="card" style="text-align:center">
+    <div class="tag" id="flashNumber">Card 1</div>
+    <h2 id="flashQuestion" style="margin:25px 0">What is HTML?</h2>
+    <p id="flashAnswer" style="display:none;color:var(--cyan);font-size:18px;margin:20px"></p>
+    <button class="btn" onclick="flipCard()">Show Answer</button>
+    <button class="btn secondary" onclick="nextFlash()">Next Card</button>
+  </div>
+</section>
+
+<section class="page" id="timer">
+  <h1>⏱ Study Timer</h1>
+  <div class="card" style="text-align:center">
+    <h2 id="timerDisplay" style="font-size:55px;color:var(--cyan)">25:00</h2>
+    <p id="timerStatus">Focus time</p>
+    <div class="row" style="margin-top:20px">
+      <button class="btn" onclick="startTimer()">Start</button>
+      <button class="btn secondary" onclick="pauseTimer()">Pause</button>
+      <button class="btn danger" onclick="resetTimer()">Reset</button>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="calculator">
+  <h1>🔢 Calculator</h1>
+  <div class="card" style="max-width:450px">
+    <input id="calcDisplay" placeholder="Enter calculation" inputmode="decimal">
+    <div class="grid" style="grid-template-columns:repeat(4,1fr)">
+      <button class="btn secondary" onclick="calcAdd('7')">7</button>
+      <button class="btn secondary" onclick="calcAdd('8')">8</button>
+      <button class="btn secondary" onclick="calcAdd('9')">9</button>
+      <button class="btn" onclick="calcAdd('/')">÷</button>
+      <button class="btn secondary" onclick="calcAdd('4')">4</button>
+      <button class="btn secondary" onclick="calcAdd('5')">5</button>
+      <button class="btn secondary" onclick="calcAdd('6')">6</button>
+      <button class="btn" onclick="calcAdd('*')">×</button>
+      <button class="btn secondary" onclick="calcAdd('1')">1</button>
+      <button class="btn secondary" onclick="calcAdd('2')">2</button>
+      <button class="btn secondary" onclick="calcAdd('3')">3</button>
+      <button class="btn" onclick="calcAdd('-')">−</button>
+      <button class="btn secondary" onclick="calcAdd('0')">0</button>
+      <button class="btn secondary" onclick="calcAdd('.')">.</button>
+      <button class="btn" onclick="calculate()">=</button>
+      <button class="btn" onclick="calcAdd('+')">+</button>
+    </div>
+    <button class="btn danger" onclick="clearCalc()">Clear</button>
+  </div>
+</section>
+
+<section class="page" id="websites">
+  <h1>🌐 Study Websites</h1>
+  <p class="subtitle">Useful external educational websites.</p>
+  <div class="card" id="websiteList"></div>
+</section>
+
+<section class="page" id="about">
+  <h1>About AMAN STUDY ZONE</h1>
+  <div class="card">
+    <h2>Learn • Practice • Grow</h2>
+    <p>AMAN STUDY ZONE is a student learning website for school subjects, coding tutorials, quizzes and study tools.</p>
+    <br>
+    <p><b>Technology:</b> HTML, CSS and JavaScript</p>
+    <p><b>Backend:</b> Not required</p>
+    <p><b>Online compiler:</b> Not included</p>
+    <p><b>Storage:</b> Browser local storage</p>
+  </div>
+</section>
+
+<footer>© 2026 AMAN STUDY ZONE • Learn Something New Every Day</footer>
+</main>
+</div>
+<div id="toast"></div>
+
+<script>
+// NAVIGATION
+function showPage(id,button) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav').forEach(n=>n.classList.remove('active'));
+
+  if(button) button.classList.add('active');
+  else {
+    const nav=[...document.querySelectorAll('.nav')]
+      .find(n=>n.getAttribute('onclick')?.includes("'"+id+"'"));
+    if(nav) nav.classList.add('active');
+  }
+
+  document.getElementById('sidebar').classList.remove('open');
+  if(id==='notes') renderNotes();
+}
+function toggleMenu(){
+  document.getElementById('sidebar').classList.toggle('open');
+}
+function toast(message){
+  const t=document.getElementById('toast');
+  t.textContent=message;
+  t.style.display='block';
+  setTimeout(()=>t.style.display='none',2200);
+}
+
+// MOTIVATION
+const quotes=[
+  "Small steps every day lead to big achievements.",
+  "Never stop learning. Every day is a new opportunity.",
+  "Practice makes progress.",
+  "Believe in your ability to learn something new."
+];
+function newQuote(){
+  document.getElementById('quote').textContent=
+    quotes[Math.floor(Math.random()*quotes.length)];
+}
+
+// CLASSES
+const classGrid=document.getElementById('classGrid');
+for(let i=1;i<=12;i++){
+  const c=document.createElement('div');
+  c.className='card';
+  c.innerHTML=`<div class="big">📘</div>
+  <h3>Class ${i}</h3>
+  <p>Explore learning resources for Class ${i}.</p>
+  <button class="btn small">Explore Class</button>`;
+  c.querySelector('button').onclick=()=>selectClass(i);
+  classGrid.appendChild(c);
+}
+function selectClass(n){
+  document.getElementById('classTitle').textContent='Class '+n+' Resources';
+  document.getElementById('classInfo').textContent=
+    'Choose a learning platform for Class '+n+'.';
+  document.getElementById('classLinks').innerHTML=`
+    <div class="resource"><b>NCERT Textbooks</b>
+    <a href="https://ncert.nic.in/textbook.php" target="_blank" rel="noopener">Open ↗</a></div>
+    <div class="resource"><b>DIKSHA Learning</b>
+    <a href="https://diksha.gov.in/" target="_blank" rel="noopener">Open ↗</a></div>
+    <div class="resource"><b>ePathshala</b>
+    <a href="https://epathshala.nic.in/" target="_blank" rel="noopener">Open ↗</a></div>`;
+}
+
+// COMPETITIVE EXAMS
+const exams=[
+ ['JEE','Engineering entrance information','https://jeemain.nta.nic.in/'],
+ ['NEET','Medical entrance information','https://neet.nta.nic.in/'],
+ ['CUET','University entrance information','https://cuet.nta.nic.in/'],
+ ['UPSC','Civil services examination','https://upsc.gov.in/'],
+ ['SSC','Staff selection examinations','https://ssc.gov.in/'],
+ ['NDA','Defence academy examination','https://upsc.gov.in/']
+];
+document.getElementById('examGrid').innerHTML=exams.map(e=>
+ `<div class="card"><div class="big">🎯</div>
+ <h3>${e[0]}</h3><p>${e[1]}</p>
+ <a href="${e[2]}" target="_blank" rel="noopener">
+ <button class="btn small">Official Website ↗</button></a></div>`
+).join('');
+
+// CODING COURSES
+const courses={
+ html:{
+  name:'HTML',
+  desc:'HTML creates the structure of a webpage.',
+  content:`<h3>What is HTML?</h3>
+  <p>HTML stands for HyperText Markup Language. It creates webpage structure.</p>
+  <h3>Basic HTML Tags</h3>
+  <p>&lt;h1&gt; Heading</p>
+  <p>&lt;p&gt; Paragraph</p>
+  <p>&lt;a&gt; Link</p>
+  <p>&lt;img&gt; Image</p>
+  <h3>Example</h3>
+  <pre>&lt;h1&gt;Hello World&lt;/h1&gt;
+  &lt;p&gt;My first webpage&lt;/p&gt;</pre>`
+ },
+ css:{
+  name:'CSS',
+  desc:'CSS styles and designs webpages.',
+  content:`<h3>What is CSS?</h3>
+  <p>CSS stands for Cascading Style Sheets. It controls colors, spacing and layout.</p>
+  <h3>Basic CSS</h3>
+  <pre>h1 {
+    color: blue;
+    font-size: 30px;
+  }
+  body {
+    background: black;
+    color: white;
+  }</pre>`
+ },
+ javascript:{
+  name:'JavaScript',
+  desc:'JavaScript adds interactivity to websites.',
+  content:`<h3>What is JavaScript?</h3>
+  <p>JavaScript makes webpages interactive.</p>
+  <h3>Example</h3>
+  <pre>let name = "Student";
+  console.log("Hello " + name);
+  alert("Welcome!");</pre>`
+ },
+ python:{
+  name:'Python',
+  desc:'Python is a beginner-friendly programming language.',
+  content:`<h3>What is Python?</h3>
+  <p>Python is used in automation, data science and many other fields.</p>
+  <h3>Print statement</h3>
+  <pre>print("Hello World")</pre>
+  <h3>Variables</h3>
+  <pre>name = "Student"
+  age = 15
+  print(name)
+  print(age)</pre>
+  <p>Python tutorials only. Execution is not provided.</p>`
+ },
+ java:{
+  name:'Java',
+  desc:'Java is an object-oriented programming language.',
+  content:`<h3>What is Java?</h3>
+  <p>Java is used in applications and software systems.</p>
+  <h3>Hello World</h3>
+  <pre>class Main {
+    public static void main(String[] args) {
+      System.out.println("Hello World");
+    }
+  }</pre>
+  <p>Java tutorials only. Execution is not provided.</p>`
+ },
+ c:{
+  name:'C Language',
+  desc:'C is a foundational programming language.',
+  content:`<h3>What is C?</h3>
+  <p>C is a general-purpose programming language.</p>
+  <h3>Hello World</h3>
+  <pre>#include &lt;stdio.h&gt;
+  int main() {
+    printf("Hello World");
+    return 0;
+  }</pre>
+  <p>C tutorials only. Execution is not provided.</p>`
+ }
+};
+
+const courseGrid=document.getElementById('courseGrid');
+Object.keys(courses).forEach(key=>{
+  const c=courses[key];
+  const div=document.createElement('div');
+  div.className='card';
+  div.innerHTML=`<div class="big">💻</div>
+  <h3>${c.name}</h3><p>${c.desc}</p>
+  <button class="btn small">Start Learning</button>`;
+  div.querySelector('button').onclick=()=>loadLesson(key);
+  courseGrid.appendChild(div);
+});
+
+function loadLesson(key){
+  const c=courses[key];
+  document.getElementById('lessonTitle').textContent=c.name+' Tutorial';
+  document.getElementById('lessonDescription').textContent=c.desc;
+  document.getElementById('lessonContent').innerHTML=c.content;
+  document.getElementById('coding').scrollIntoView({behavior:'smooth'});
+}
+
+// HTML/CSS/JAVASCRIPT PLAYGROUND
+const starterCode=document.getElementById('editor').value;
+
+function runCode(){
+  const code=document.getElementById('editor').value;
+  document.getElementById('preview').srcdoc=code;
+  toast('Code executed in preview!');
+}
+function resetCode(){
+  document.getElementById('editor').value=starterCode;
+  document.getElementById('preview').srcdoc='';
+  toast('Editor reset');
+}
+async function copyCode(){
+  try{
+    await navigator.clipboard.writeText(
+      document.getElementById('editor').value
+    );
+    toast('Code copied!');
+  }catch(e){
+    toast('Clipboard unavailable in this browser');
+  }
+}
+
+// NOTES
+function getNotes(){
+  try{
+    return JSON.parse(localStorage.getItem('amanNotes')||'[]');
+  }catch(e){
+    return [];
+  }
+}
+function saveNote(){
+  const title=document.getElementById('noteTitle').value.trim();
+  const body=document.getElementById('noteText').value.trim();
+
+  if(!title||!body){
+    toast('Enter a title and note');
+    return;
+  }
+
+  const notes=getNotes();
+  notes.unshift({id:Date.now(),title,body});
+  localStorage.setItem('amanNotes',JSON.stringify(notes));
+
+  document.getElementById('noteTitle').value='';
+  document.getElementById('noteText').value='';
+  renderNotes();
+  toast('Note saved!');
+}
+function renderNotes(){
+  const notes=getNotes();
+  const box=document.getElementById('notesList');
+  box.innerHTML='';
+
+  if(!notes.length){
+    box.innerHTML='<div class="card"><p>No notes saved yet.</p></div>';
+    return;
+  }
+
+  notes.forEach(note=>{
+    const card=document.createElement('div');
+    card.className='card';
+    card.style.marginTop='12px';
+
+    const h=document.createElement('h3');
+    h.textContent=note.title;
+
+    const p=document.createElement('p');
+    p.style.whiteSpace='pre-wrap';
+    p.textContent=note.body;
+
+    const b=document.createElement('button');
+    b.className='btn danger small';
+    b.textContent='Delete';
+    b.onclick=()=>deleteNote(note.id);
+
+    card.append(h,p,b);
+    box.appendChild(card);
+  });
+}
+function deleteNote(id){
+  localStorage.setItem('amanNotes',
+    JSON.stringify(getNotes().filter(n=>n.id!==id))
+  );
+  renderNotes();
+  toast('Note deleted');
+}
+
+// QUIZ
+const questions=[
+ {q:'What does HTML stand for?',
+  a:['HyperText Markup Language','High Text Machine Language','Home Tool Markup Language'],correct:0},
+ {q:'Which language styles webpages?',
+  a:['Python','CSS','Java'],correct:1},
+ {q:'Which adds interactivity to webpages?',
+  a:['JavaScript','HTML only','SQL'],correct:0},
+ {q:'What is the capital of India?',
+  a:['Mumbai','New Delhi','Kolkata'],correct:1},
+ {q:'Which tag creates a paragraph?',
+  a:['<h1>','<p>','<img>'],correct:1}
+];
+
+let qIndex=0;
+let points=0;
+let answered=false;
+
+function startQuiz(){
+  qIndex=0;
+  points=0;
+  showQuestion();
+}
+function showQuestion(){
+  answered=false;
+  const q=questions[qIndex];
+
+  document.getElementById('questionNumber').textContent=
+    `Question ${qIndex+1} of ${questions.length}`;
+  document.getElementById('question').textContent=q.q;
+  document.getElementById('quizFeedback').textContent='';
+  document.getElementById('nextQuestion').style.display='none';
+  document.getElementById('score').textContent='Score: '+points;
+  document.getElementById('answers').innerHTML='';
+
+  q.a.forEach((answer,i)=>{
+    const b=document.createElement('button');
+    b.className='answer';
+    b.textContent=answer;
+    b.onclick=()=>checkAnswer(i);
+    document.getElementById('answers').appendChild(b);
+  });
+}
+function checkAnswer(i){
+  if(answered)return;
+  answered=true;
+
+  if(i===questions[qIndex].correct){
+    points++;
+    document.getElementById('quizFeedback').textContent='Correct answer!';
+  }else{
+    document.getElementById('quizFeedback').textContent=
+      'Correct answer: '+questions[qIndex].a[questions[qIndex].correct];
+  }
+
+  document.getElementById('score').textContent='Score: '+points;
+  document.getElementById('nextQuestion').style.display='inline-block';
+}
+function nextQuestion(){
+  qIndex++;
+  if(qIndex>=questions.length){
+    document.getElementById('question').textContent='Quiz completed!';
+    document.getElementById('answers').innerHTML='';
+    document.getElementById('quizFeedback').textContent=
+      `Your final score is ${points} out of ${questions.length}.`;
+    document.getElementById('nextQuestion').style.display='none';
+    return;
+  }
+  showQuestion();
+}
+startQuiz();
+
+// FLASHCARDS
+const flashData=[
+ ['What is HTML?','HTML creates the structure of webpages.'],
+ ['What is CSS?','CSS is used to style webpages.'],
+ ['What is JavaScript?','JavaScript adds interactivity to webpages.'],
+ ['What is a variable?','A variable stores a value in a program.'],
+ ['What is a loop?','A loop repeats a set of instructions.']
+];
+
+let flashIndex=0;
+let flipped=false;
+
+function renderFlash(){
+  document.getElementById('flashNumber').textContent=
+    `Card ${flashIndex+1} of ${flashData.length}`;
+  document.getElementById('flashQuestion').textContent=
+    flashData[flashIndex][0];
+  document.getElementById('flashAnswer').textContent=
+    flashData[flashIndex][1];
+  document.getElementById('flashAnswer').style.display='none';
+  flipped=false;
+}
+function flipCard(){
+  flipped=!flipped;
+  document.getElementById('flashAnswer').style.display=
+    flipped?'block':'none';
+}
+function nextFlash(){
+  flashIndex=(flashIndex+1)%flashData.length;
+  renderFlash();
+}
+renderFlash();
+
+// STUDY TIMER
+let timerSeconds=25*60;
+let timerInterval=null;
+
+function updateTimer(){
+  const m=Math.floor(timerSeconds/60);
+  const s=timerSeconds%60;
+  document.getElementById('timerDisplay').textContent=
+    String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+}
+function startTimer(){
+  if(timerInterval)return;
+  document.getElementById('timerStatus').textContent='Stay focused!';
+
+  timerInterval=setInterval(()=>{
+    if(timerSeconds>0){
+      timerSeconds--;
+      updateTimer();
+    }else{
+      clearInterval(timerInterval);
+      timerInterval=null;
+      document.getElementById('timerStatus').textContent=
+        'Session complete! Take a break.';
+      toast('Study session complete!');
+    }
+  },1000);
+}
+function pauseTimer(){
+  clearInterval(timerInterval);
+  timerInterval=null;
+  document.getElementById('timerStatus').textContent='Timer paused';
+}
+function resetTimer(){
+  pauseTimer();
+  timerSeconds=25*60;
+  updateTimer();
+  document.getElementById('timerStatus').textContent='Focus time';
+}
+updateTimer();
+
+// CALCULATOR
+function calcAdd(v){
+  document.getElementById('calcDisplay').value+=v;
+}
+function clearCalc(){
+  document.getElementById('calcDisplay').value='';
+}
+function calculate(){
+  const display=document.getElementById('calcDisplay');
+  const expression=display.value.trim();
+
+  if(!/^[0-9+\-*/().\s]+$/.test(expression)){
+    display.value='Invalid';
+    return;
+  }
+
+  try{
+    const result=Function('"use strict";return ('+expression+')')();
+    display.value=Number.isFinite(result)?String(result):'Error';
+  }catch(e){
+    display.value='Error';
+  }
+}
+
+// STUDY WEBSITES
+const websites=[
+ ['NCERT','https://ncert.nic.in/','Textbooks and school resources'],
+ ['DIKSHA','https://diksha.gov.in/','Digital learning platform'],
+ ['ePathshala','https://epathshala.nic.in/','Digital textbooks'],
+ ['CBSE','https://www.cbse.gov.in/','CBSE official website'],
+ ['Khan Academy','https://www.khanacademy.org/','Free learning lessons'],
+ ['SWAYAM','https://swayam.gov.in/','Online courses'],
+ ['NPTEL','https://nptel.ac.in/','Technical education'],
+ ['NDLI','https://ndl.iitkgp.ac.in/','Digital library']
+];
+
+document.getElementById('websiteList').innerHTML=websites.map(w=>
+  `<div class="resource">
+    <div><b>${w[0]}</b>
+    <p style="color:var(--muted);font-size:12px;margin-top:4px">${w[2]}</p></div>
+    <a href="${w[1]}" target="_blank" rel="noopener">Visit ↗</a>
+  </div>`
+).join('');
+
+// INITIALIZE
+renderNotes();
+</script>
+</body>
+</html>
+
